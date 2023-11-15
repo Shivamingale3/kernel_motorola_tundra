@@ -3804,8 +3804,6 @@ end:
 
 	drm_modeset_drop_locks(&ctx);
 	drm_modeset_acquire_fini(&ctx);
-
-	return ret;
 }
 
 
