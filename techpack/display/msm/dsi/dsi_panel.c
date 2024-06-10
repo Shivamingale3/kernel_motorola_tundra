@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
  * Copyright (c) 2016-2021, The Linux Foundation. All rights reserved.
  */
 
@@ -1129,7 +1129,7 @@ static int dsi_panel_set_acl(struct dsi_panel *panel,
 {
 	int rc = 0;
 
-	pr_info("Set ACL to (%d)\n", param_info->value);
+	pr_debug("Set ACL to (%d)\n", param_info->value);
 	rc = dsi_panel_send_param_cmd(panel, param_info);
 	if (rc < 0)
 		DSI_ERR("%s: failed to send param cmds. ret=%d\n", __func__, rc);
@@ -1142,7 +1142,7 @@ static int dsi_panel_set_cabc(struct dsi_panel *panel,
 {
 	int rc = 0;
 
-	pr_info("%s: Set CABC to (%d)\n", __func__, param_info->value);
+	pr_debug("%s: Set CABC to (%d)\n", __func__, param_info->value);
 	panel->cabc_state = param_info->value;
 	rc = dsi_panel_send_param_cmd(panel, param_info);
 	if (rc < 0)
@@ -1156,7 +1156,7 @@ static int dsi_panel_set_dc(struct dsi_panel *panel,
 {
 	int rc = 0;
 
-	pr_info("Set DC to (%d)\n", param_info->value);
+	pr_debug("Set DC to (%d)\n", param_info->value);
 	panel->dc_state = param_info->value;
 	rc = dsi_panel_send_param_cmd(panel, param_info);
 	if (rc < 0)
@@ -1170,7 +1170,7 @@ static int dsi_panel_set_color(struct dsi_panel *panel,
 {
 	int rc = 0;
 
-	pr_info("Set COLOR to (%d)\n", param_info->value);
+	pr_debug("Set COLOR to (%d)\n", param_info->value);
 	rc = dsi_panel_send_param_cmd(panel, param_info);
 	if (rc < 0)
 		DSI_ERR("%s: failed to send param cmds. ret=%d\n", __func__, rc);
@@ -1711,8 +1711,7 @@ static int dsi_panel_parse_misc_host_config(struct dsi_host_common_cfg *host,
 
 	host->ext_bridge_mode = utils->read_bool(utils->data,
 					"qcom,mdss-dsi-ext-bridge-mode");
-	host->ext_bridge_hpd_en = utils->read_bool(utils->data,
-					"qcom,mdss-dsi-ext-bridge-hpd");
+
 	host->force_hs_clk_lane = utils->read_bool(utils->data,
 					"qcom,mdss-dsi-force-clock-lane-hs");
 	panel_cphy_mode = utils->read_bool(utils->data,
@@ -3108,6 +3107,9 @@ static int dsi_panel_parse_bl_config(struct dsi_panel *panel)
 
 	panel->bl_config.bl_inverted_dbv = utils->read_bool(utils->data,
 		"qcom,mdss-dsi-bl-inverted-dbv");
+
+	panel->bl_config.bl_remap = utils->read_bool(utils->data,
+		"qcom,mdss-dsi-bl-remap");
 
 	state = utils->get_property(utils->data, "qcom,bl-dsc-cmd-state", NULL);
 	if (!state || !strcmp(state, "dsi_hs_mode"))
@@ -6015,7 +6017,7 @@ int dsi_panel_post_switch(struct dsi_panel *panel)
 		return -EINVAL;
 	}
 
-	pr_info("(%s)+\n", panel->name);
+	pr_debug("(%s)+\n", panel->name);
 	mutex_lock(&panel->panel_lock);
 
 	rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_POST_TIMING_SWITCH);
